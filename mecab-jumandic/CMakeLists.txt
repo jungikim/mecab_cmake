@@ -1,0 +1,36 @@
+include(GNUInstallDirs)
+
+set(PACKAGE mecab-jumandic)
+set(VERSION 7.0-20130310)
+
+set(MECAB_DICT_INDEX "${CMAKE_CURRENT_BINARY_DIR}/../mecab/mecab-dict-index")
+set(CHARSET "utf-8")  # (euc-jp/sjis/utf-8)
+set(MECAB_DICDIR "${CMAKE_INSTALL_FULL_LIBDIR}/mecab/dic/jumandic")
+
+execute_process(
+  COMMAND ${MECAB_DICT_INDEX} -d ${CMAKE_CURRENT_SOURCE_DIR} -o ${CMAKE_CURRENT_BINARY_DIR} -f utf-8 -t ${CHARSET}
+  )
+
+file(GLOB DIC_DATA
+     "${CMAKE_CURRENT_BINARY_DIR}/matrix.bin"
+     "${CMAKE_CURRENT_BINARY_DIR}/char.bin"
+     "${CMAKE_CURRENT_BINARY_DIR}/sys.dic"
+     "${CMAKE_CURRENT_BINARY_DIR}/unk.dic"
+     "${CMAKE_CURRENT_SOURCE_DIR}/*.def"
+     "${CMAKE_CURRENT_SOURCE_DIR}/dicrc"
+)
+
+# message(STATUS "CMAKE_INSTALL_BINDIR: \"${CMAKE_INSTALL_FULL_BINDIR}\"")
+# message(STATUS "CMAKE_INSTALL_LIBDIR: \"${CMAKE_INSTALL_FULL_LIBDIR}\"")
+# message(STATUS "CMAKE_INSTALL_INCLUDEDIR: \"${CMAKE_INSTALL_FULL_INCLUDEDIR}\"")
+# message(STATUS "MECAB_DICT_INDEX: \"${MECAB_DICT_INDEX}\"")
+# message(STATUS "CHARSET: \"${CHARSET}\"")
+# message(STATUS "MECAB_DICDIR: \"${MECAB_DICDIR}\"")
+# message(STATUS "CMAKE_CURRENT_SOURCE_DIR: \"${CMAKE_CURRENT_SOURCE_DIR}\"")
+# message(STATUS "CMAKE_CURRENT_BINARY_DIR: \"${CMAKE_CURRENT_BINARY_DIR}\"")
+# message(STATUS "DIC_DATA: \"${DIC_DATA}\"")
+
+install(FILES
+  ${DIC_DATA}
+  DESTINATION "${MECAB_DICDIR}"
+  )
