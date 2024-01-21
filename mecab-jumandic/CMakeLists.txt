@@ -7,17 +7,24 @@ set(MECAB_DICT_INDEX "${CMAKE_CURRENT_BINARY_DIR}/../mecab/mecab-dict-index")
 set(CHARSET "utf-8")  # (euc-jp/sjis/utf-8)
 set(MECAB_DICDIR "${CMAKE_INSTALL_FULL_LIBDIR}/mecab/dic/jumandic")
 
-execute_process(
+set(BYPRODUCTS
+  "${CMAKE_CURRENT_BINARY_DIR}/char.bin"
+  "${CMAKE_CURRENT_BINARY_DIR}/matrix.bin"
+  "${CMAKE_CURRENT_BINARY_DIR}/model.bin"
+  "${CMAKE_CURRENT_BINARY_DIR}/sys.dic"
+  "${CMAKE_CURRENT_BINARY_DIR}/unk.dic"
+)
+
+add_custom_target(
+  mecab-jumandic ALL
   COMMAND ${MECAB_DICT_INDEX} -d ${CMAKE_CURRENT_SOURCE_DIR} -o ${CMAKE_CURRENT_BINARY_DIR} -f utf-8 -t ${CHARSET}
-  )
+  BYPRODUCTS ${BYPRODUCTS}
+)
 
 file(GLOB DIC_DATA
-     "${CMAKE_CURRENT_BINARY_DIR}/matrix.bin"
-     "${CMAKE_CURRENT_BINARY_DIR}/char.bin"
-     "${CMAKE_CURRENT_BINARY_DIR}/sys.dic"
-     "${CMAKE_CURRENT_BINARY_DIR}/unk.dic"
-     "${CMAKE_CURRENT_SOURCE_DIR}/*.def"
-     "${CMAKE_CURRENT_SOURCE_DIR}/dicrc"
+  ${BYPRODUCTS}
+  "${CMAKE_CURRENT_SOURCE_DIR}/*.def"
+  "${CMAKE_CURRENT_SOURCE_DIR}/dicrc"
 )
 
 # message(STATUS "CMAKE_INSTALL_BINDIR: \"${CMAKE_INSTALL_FULL_BINDIR}\"")

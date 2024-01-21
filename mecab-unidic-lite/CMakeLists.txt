@@ -7,15 +7,19 @@ find_package(Python COMPONENTS Interpreter REQUIRED)
 set(PYPKG unidic-lite==1.0.8)
 set(TARGETDIR "${CMAKE_CURRENT_BINARY_DIR}/unidic-lite_1.0.8")
 
-execute_process(COMMAND ${Python_EXECUTABLE} -m pip install ${PYPKG} -t ${TARGETDIR})
+add_custom_target(
+  mecab-unidic-lite ALL
+  COMMAND ${Python_EXECUTABLE} -m pip install ${PYPKG} -t ${TARGETDIR}
+  BYPRODUCTS "${TARGETDIR}"
+)
 
 file(GLOB DIC_DATA
-     "${TARGETDIR}/unidic_lite/dicdir/matrix.bin"
-     "${TARGETDIR}/unidic_lite/dicdir/char.bin"
-     "${TARGETDIR}/unidic_lite/dicdir/sys.dic"
-     "${TARGETDIR}/unidic_lite/dicdir/unk.dic"
-     "${TARGETDIR}/unidic_lite/dicdir/*.def"
-     "${TARGETDIR}/unidic_lite/dicdir/dicrc"
+  "${TARGETDIR}/unidic_lite/dicdir/matrix.bin"
+  "${TARGETDIR}/unidic_lite/dicdir/char.bin"
+  "${TARGETDIR}/unidic_lite/dicdir/sys.dic"
+  "${TARGETDIR}/unidic_lite/dicdir/unk.dic"
+  "${TARGETDIR}/unidic_lite/dicdir/*.def"
+  "${TARGETDIR}/unidic_lite/dicdir/dicrc"
 )
 
 # message(STATUS "CMAKE_INSTALL_LIBDIR: \"${CMAKE_INSTALL_FULL_LIBDIR}\"")
