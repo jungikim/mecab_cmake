@@ -8,7 +8,7 @@ set(PACKAGE mecab)
 set(VERSION 0.996)
 set(DIC_VERSION "102")
 set(MECAB_USE_UTF8_ONLY "-DMECAB_USE_UTF8_ONLY")
-set(MECAB_DEFAULT_RC ${CMAKE_INSTALL_FULL_SYSCONFDIR}/mecabrc)
+set(MECAB_DEFAULT_RC ${CMAKE_INSTALL_SYSCONFDIR}/mecabrc)
 set(LTVERSION "2:0:0")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -Wall")
@@ -167,6 +167,21 @@ if(HAVE_OSX_ATOMIC_OPS)
   add_compile_options(-DHAVE_OSX_ATOMIC_OPS)
 endif()
 
+list(APPEND MECAB_LIBS
+  "-lstdc++"
+  ${Iconv_LIBRARIES}
+  )
+
+# Defined by CMake: CXX, CC
+# Defined here: VERSION, MECAB_LIBS
+set(prefix ${CMAKE_INSTALL_PREFIX})
+set(exec_prefix ${CMAKE_INSTALL_PREFIX})
+set(includedir ${CMAKE_INSTALL_INCLUDEDIR})
+set(sysconfdir ${CMAKE_INSTALL_SYSCONFDIR})
+
+configure_file(mecab-config.in mecab-config @ONLY)
+configure_file(mecabrc.in mecabrc @ONLY)
+
 set(SOURCES
   src/viterbi.cpp
   src/tagger.cpp
@@ -237,12 +252,13 @@ add_executable(mecab-cost-train src/mecab-cost-train.cpp)
 add_executable(mecab-system-eval src/mecab-system-eval.cpp)
 add_executable(mecab-test-gen src/mecab-test-gen.cpp)
 
-target_link_libraries(mecabbin mecab ${Iconv_LIBRARIES})
-target_link_libraries(mecab-dict-index mecab ${Iconv_LIBRARIES})
-target_link_libraries(mecab-dict-gen mecab ${Iconv_LIBRARIES})
-target_link_libraries(mecab-cost-train mecab ${Iconv_LIBRARIES})
-target_link_libraries(mecab-system-eval mecab ${Iconv_LIBRARIES})
-target_link_libraries(mecab-test-gen mecab ${Iconv_LIBRARIES})
+target_link_libraries(mecabbin mecab ${MECAB_LIBS})
+target_link_libraries(mecab-dict-index mecab ${MECAB_LIBS})
+target_link_libraries(mecab-dict-gen mecab ${MECAB_LIBS})
+target_link_libraries(mecab-cost-train mecab ${MECAB_LIBS})
+target_link_libraries(mecab-system-eval mecab ${MECAB_LIBS})
+target_link_libraries(mecab-test-gen mecab ${MECAB_LIBS})
+
 
 install(
   TARGETS mecab mecabbin
@@ -254,4 +270,14 @@ install(
 install(FILES
   src/mecab.h
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+  )
+install(
+  TARGETS mecab-dict-index mecab-dict-gen mecab-cost-train mecab-system-eval mecab-test-gen
+  DESTINATION ${CMAKE_INSTALL_LIBEXECDIR}
+  )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mecabrc
+  DESTINATION ${CMAKE_INSTALL_SYSCONFDIR}
+  )
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mecab-config
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
   )
