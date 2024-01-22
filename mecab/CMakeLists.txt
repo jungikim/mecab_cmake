@@ -23,6 +23,9 @@ add_compile_options(
 )
 set(CMAKE_MODULE_LINKER_FLAGS -no-undefined -version-info ${LTVERSION})
 
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+
+
 message(STATUS "Iconv_FOUND: \"${Iconv_FOUND}\"")
 message(STATUS "Iconv_INCLUDE_DIR: \"${Iconv_INCLUDE_DIR}\"")
 message(STATUS "Iconv_LIBRARIES: \"${Iconv_LIBRARIES}\"")
@@ -167,10 +170,11 @@ if(HAVE_OSX_ATOMIC_OPS)
   add_compile_options(-DHAVE_OSX_ATOMIC_OPS)
 endif()
 
-list(APPEND MECAB_LIBS
-  "-lstdc++"
-  ${Iconv_LIBRARIES}
-  )
+set(MECAB_LIBS "-lstdc++")
+if(Iconv_FOUND)
+  set(MECAB_LIBS "${MECAB_LIBS} -liconv ${Iconv_LIBRARIES}")
+endif()
+message(STATUS "MECAB_LIBS: \"${MECAB_LIBS}\"")
 
 set(CXX ${CMAKE_CXX_COMPILER})
 set(CC ${CMAKE_C_COMPILER})
@@ -244,6 +248,7 @@ else()
 endif()
 set_target_properties(mecab PROPERTIES VERSION ${VERSION})
 target_include_directories(mecab PUBLIC ${CMAKE_SOURCE_DIR})
+target_link_libraries(mecab ${MECAB_LIBS})
 
 add_executable(mecabbin src/mecab.cpp)
 set_property(TARGET mecabbin PROPERTY OUTPUT_NAME mecab)
