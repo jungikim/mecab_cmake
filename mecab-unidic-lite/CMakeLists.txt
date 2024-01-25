@@ -9,7 +9,7 @@ set(TARGETDIR "${CMAKE_CURRENT_BINARY_DIR}/unidic-lite_1.0.8")
 
 add_custom_target(
   mecab-unidic-lite ALL
-  COMMAND ${Python_EXECUTABLE} -m pip install ${PYPKG} -t ${TARGETDIR}
+  COMMAND ${Python_EXECUTABLE} -m pip install ${PYPKG} -t ${TARGETDIR} --upgrade
   BYPRODUCTS "${TARGETDIR}"
 )
 
