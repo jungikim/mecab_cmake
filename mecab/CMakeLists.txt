@@ -6,10 +6,10 @@ include(CheckFunctionExists)
 
 set(PACKAGE mecab)
 set(VERSION 0.996)
-set(DIC_VERSION "102")
+set(MECAB_DIC_VERSION "102")
 set(MECAB_USE_UTF8_ONLY "-DMECAB_USE_UTF8_ONLY")
 set(MECAB_DEFAULT_RC ${CMAKE_INSTALL_SYSCONFDIR}/mecabrc)
-set(LTVERSION "2:0:0")
+set(MECAB_LTVERSION "2:0:0")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -Wall")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall")
@@ -17,11 +17,11 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wall")
 add_compile_options(
 	-DPACKAGE="${PACKAGE}"
 	-DVERSION="${VERSION}"
-	-DDIC_VERSION=${DIC_VERSION}
+	-DDIC_VERSION=${MECAB_DIC_VERSION}
   ${MECAB_USE_UTF8_ONLY}
   -DMECAB_DEFAULT_RC="${MECAB_DEFAULT_RC}"
 )
-set(CMAKE_MODULE_LINKER_FLAGS -no-undefined -version-info ${LTVERSION})
+set(CMAKE_MODULE_LINKER_FLAGS -no-undefined -version-info ${MECAB_LTVERSION})
 
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
@@ -187,7 +187,7 @@ set(sysconfdir ${CMAKE_INSTALL_SYSCONFDIR})
 configure_file(mecab-config.in mecab-config @ONLY)
 configure_file(mecabrc.in mecabrc @ONLY)
 
-set(SOURCES
+set(MECAB_SOURCES
   src/viterbi.cpp
   src/tagger.cpp
   src/utils.cpp
@@ -242,9 +242,9 @@ set(SOURCES
   )
 
 if(COMMAND create_library)
-  create_library(mecab SHARED ${SOURCES})
+  create_library(mecab SHARED ${MECAB_SOURCES})
 else()
-  add_library(mecab ${SOURCES})
+  add_library(mecab ${MECAB_SOURCES})
 endif()
 set_target_properties(mecab PROPERTIES VERSION ${VERSION})
 target_include_directories(mecab PUBLIC ${CMAKE_SOURCE_DIR})
