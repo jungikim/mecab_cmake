@@ -17,7 +17,7 @@ add_subdirectory(mecab)
 add_subdirectory(mecab-unidic-lite)
 add_dependencies(mecab-unidic-lite mecab)
 
-if(NOT CMAKE_HOST_SYSTEM_NAME MATCHES "Windows")
+if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux")
   add_subdirectory(mecab-ipadic)
   add_dependencies(mecab-ipadic mecab)
   add_subdirectory(mecab-jumandic)
